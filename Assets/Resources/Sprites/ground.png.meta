@@ -564,7 +564,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_20
+      name: water_t_1
       rect:
         serializedVersion: 2
         x: 0
@@ -586,7 +586,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_21
+      name: water_t_2
       rect:
         serializedVersion: 2
         x: 16
@@ -608,7 +608,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_22
+      name: water_t_3
       rect:
         serializedVersion: 2
         x: 32
@@ -630,7 +630,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_23
+      name: water_t_4
       rect:
         serializedVersion: 2
         x: 48
@@ -652,7 +652,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_24
+      name: water_t_5
       rect:
         serializedVersion: 2
         x: 64
@@ -674,7 +674,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_25
+      name: water_t_6
       rect:
         serializedVersion: 2
         x: 80
@@ -696,7 +696,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_26
+      name: water_b_1
       rect:
         serializedVersion: 2
         x: 0
@@ -718,7 +718,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_27
+      name: water_b_2
       rect:
         serializedVersion: 2
         x: 16
@@ -740,7 +740,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_28
+      name: water_b_3
       rect:
         serializedVersion: 2
         x: 32
@@ -762,7 +762,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_29
+      name: water_b_4
       rect:
         serializedVersion: 2
         x: 48
@@ -784,7 +784,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_30
+      name: water_b_5
       rect:
         serializedVersion: 2
         x: 64
@@ -806,7 +806,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ground_31
+      name: water_b_6
       rect:
         serializedVersion: 2
         x: 80
@@ -836,7 +836,7 @@ TextureImporter:
         width: 48
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -858,7 +858,7 @@ TextureImporter:
         width: 48
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -902,25 +902,25 @@ TextureImporter:
       ground_18: -565147429
       ground_19: 872829148
       ground_2: -1977380741081267030
-      ground_20: -2040100341
-      ground_21: 511744742
-      ground_22: 993516411
-      ground_23: 385200267
-      ground_24: 2045982778
-      ground_25: -697365662
-      ground_26: -1638296020
-      ground_27: 629966589
-      ground_28: 1244050383
-      ground_29: 1297589354
       ground_3: 2270332835960527861
-      ground_30: -1726907290
-      ground_31: 921823351
       ground_4: 225495371
       ground_5: 432554306
       ground_6: 600295323
       ground_7: -1062796127
       ground_8: 2092995594
       ground_9: 475077406
+      water_b_1: -1638296020
+      water_b_2: 629966589
+      water_b_3: 1244050383
+      water_b_4: 1297589354
+      water_b_5: -1726907290
+      water_b_6: 921823351
+      water_t_1: -2040100341
+      water_t_2: 511744742
+      water_t_3: 993516411
+      water_t_4: 385200267
+      water_t_5: 2045982778
+      water_t_6: -697365662
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
