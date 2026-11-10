@@ -21,17 +21,30 @@ public class WaterManager : MonoBehaviour
 
         Debug.Log("Top tile: " + oldTileTop);
         Debug.Log("Bottom tile: " + oldTileBottom);
-        
-        SwitchTile(2);
+
+        SwitchTile(1);
+
     }
 
-    void SwitchTile(int tileId)
+    public void SwitchTile(int tileId)
     {
         TileBase newTileTop = Resources.Load<TileBase>("Tilemaps/water_t_" + tileId);
         TileBase newTileBottom = Resources.Load<TileBase>("Tilemaps/water_b_" + tileId);
 
-        tilemap.SwapTile(oldTileTop, newTileTop);
+        if (newTileTop == null || newTileBottom == null)
+        {
+            Debug.LogError("Could not load tiles for ID: " + tileId);
+            return;
+        }
+
+        Debug.Log("Old top: " + oldTileTop.name);
+        Debug.Log("New top: " + newTileTop.name);
+
+        Debug.Log("Old bottom: " + oldTileBottom.name);
+        Debug.Log("New bottom: " + newTileBottom.name);
+
         tilemap.SwapTile(oldTileBottom, newTileBottom);
+        tilemap.SwapTile(oldTileTop, newTileTop);
 
         oldTileTop = newTileTop;
         oldTileBottom = newTileBottom;
