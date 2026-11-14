@@ -22,8 +22,27 @@ public class WaterManager : MonoBehaviour
         Debug.Log("Top tile: " + oldTileTop);
         Debug.Log("Bottom tile: " + oldTileBottom);
 
-        SwitchTile(1);
+        // Estado 0 (muy sucia) = tile 1 (verde) ... estado 5 (limpia) = tile 6 (azul)
+        int estadoInicial = 0;
+        if (GameManager.Instancia != null)
+        {
+            estadoInicial = GameManager.Instancia.EstadoAgua;
+            GameManager.Instancia.OnEstadoAguaCambiado += CambiarEstadoAgua;
+        }
+        SwitchTile(estadoInicial + 1);
+    }
 
+    void OnDestroy()
+    {
+        // Al cambiar de escena hay que dejar de escuchar el evento
+        if (GameManager.Instancia != null)
+            GameManager.Instancia.OnEstadoAguaCambiado -= CambiarEstadoAgua;
+    }
+
+    // Se llama desde el GameManager cuando cambia el estado del agua (0..5)
+    private void CambiarEstadoAgua(int estado)
+    {
+        SwitchTile(estado + 1);
     }
 
     public void SwitchTile(int tileId)

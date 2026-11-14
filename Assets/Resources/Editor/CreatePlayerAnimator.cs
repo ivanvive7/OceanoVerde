@@ -5,7 +5,7 @@ using UnityEngine;
 
 /// <summary>
 /// Crea automáticamente el Animator Controller del jugador:
-///  Parámetros: Speed (float), IsJumping (bool), IsSwimming (bool)
+///  Parámetros: Speed (float), IsGrounded (bool), IsJumping (bool), IsSwimming (bool)
 ///  Estados:    Idle, Run, Jump, Swim
 /// DEBE estar dentro de una carpeta llamada "Editor" (Assets/Editor).
 ///
@@ -24,6 +24,7 @@ public static class CreatePlayerAnimator
 
         // ---- Parámetros ----
         controller.AddParameter("Speed", AnimatorControllerParameterType.Float);
+        controller.AddParameter("IsGrounded", AnimatorControllerParameterType.Bool);
         controller.AddParameter("IsJumping", AnimatorControllerParameterType.Bool);
         controller.AddParameter("IsSwimming", AnimatorControllerParameterType.Bool);
 
@@ -52,6 +53,7 @@ public static class CreatePlayerAnimator
 
         t = AddTransition(idle, run);
         t.AddCondition(AnimatorConditionMode.Greater, 0.1f, "Speed");
+        t.AddCondition(AnimatorConditionMode.If, 0, "IsGrounded");
 
         t = AddTransition(run, idle);
         t.AddCondition(AnimatorConditionMode.Less, 0.1f, "Speed");
