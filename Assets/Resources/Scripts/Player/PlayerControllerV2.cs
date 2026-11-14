@@ -16,6 +16,7 @@ public class PlayerControllerV2 : MonoBehaviour
 
     Rigidbody2D rb;
     Animator animator;
+    SpriteRenderer spriteRenderer;
     InputAction moveAction, jumpAction;
 
     float moveInput;
@@ -28,6 +29,7 @@ public class PlayerControllerV2 : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         defaultGravity = rb.gravityScale;
 
         // Zero friction = no wall sticking
@@ -44,6 +46,12 @@ public class PlayerControllerV2 : MonoBehaviour
     {
         moveInput = moveAction.ReadValue<Vector2>().x;
 
+        if (spriteRenderer != null)
+        {
+            if (moveInput < -0.01f) spriteRenderer.flipX = true;
+            else if (moveInput > 0.01f) spriteRenderer.flipX = false;
+        }
+
         if (jumpAction.WasPressedThisFrame())
             jumpBufferCounter = jumpBufferTime;
 
@@ -51,8 +59,10 @@ public class PlayerControllerV2 : MonoBehaviour
 
         if (animator != null)
         {
-            animator.SetBool("OnAir", !isGrounded && !isSwimming);
-            animator.SetBool("Swimming", isSwimming);
+            animator.SetFloat("Speed", Mathf.Abs(moveInput * moveSpeed));
+            animator.SetBool("IsGrounded", isGrounded);
+            animator.SetBool("IsJumping", !isGrounded && !isSwimming);
+            animator.SetBool("IsSwimming", isSwimming);
         }
     }
 
@@ -71,7 +81,6 @@ public class PlayerControllerV2 : MonoBehaviour
             else
             {
                 vy = jumpSpeed;
-                if (animator != null) animator.SetBool("Jumped", true);
             }
 
             jumpBufferCounter = 0f;
@@ -91,8 +100,6 @@ public class PlayerControllerV2 : MonoBehaviour
         isSwimming = shouldSwim;
         rb.gravityScale = isSwimming ? defaultGravity * swimGravityMultiplier : defaultGravity;
 
-        if (isSwimming && animator != null)
-            animator.SetBool("Jumped", false);
     }
 
     void OnCollisionStay2D(Collision2D collision)
@@ -102,8 +109,6 @@ public class PlayerControllerV2 : MonoBehaviour
             if (contact.normal.y > 0.5f)
             {
                 isGrounded = true;
-                if (animator != null && rb.linearVelocity.y <= 0.1f)
-                    animator.SetBool("Jumped", false);
                 return;
             }
         }
