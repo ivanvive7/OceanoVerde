@@ -4,10 +4,12 @@ public class TrashPickup : MonoBehaviour
 {
     [SerializeField] Sprite[] variations;
     [SerializeField] int destroyPosibility = 5;
+    public int puntos = 10;                      // puntos que da al recogerla
     private float secondsPerBob = 0.25f;
     private static float unitsPerPixel = 0.0625f;
     private float timer;
     private bool dir;
+    private bool recogida;
     void Awake()
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
@@ -15,13 +17,28 @@ public class TrashPickup : MonoBehaviour
         if (variations.Length > 0)
             sr.sprite = variations[Random.Range(0, variations.Length)];
 
-        sr.flipX = Random.value > 0.5f; 
+        sr.flipX = Random.value > 0.5f;
 
         GetComponent<Collider2D>().isTrigger = true;
 
-        if (Random.Range(0, destroyPosibility) == 0) Destroy(gameObject);
-
         timer = -(transform.position.x / 5);
+    }
+
+    void Start()
+    {
+        // Se decide aquí (y no en Awake) si aparece, porque el GameManager pone
+        // los contadores a 0 al cargar la escena, y eso ocurre antes de los Start.
+        if (Random.Range(0, destroyPosibility) == 0)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        // Ha aparecido: se registra en el GameManager para que la cuente
+        if (GameManager.Instancia != null)
+            GameManager.Instancia.RegistrarBasura();
+        else
+            Debug.LogWarning("TrashPickup: no hay GameManager en la escena, la basura no se cuenta.");
     }
 
     private void Update()
@@ -36,10 +53,15 @@ public class TrashPickup : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.CompareTag("Player")) return;
+        // Solo la recoge el jugador, y solo una vez
+        if (recogida || !other.CompareTag("Player")) return;
 
-        // TODO que haga algo
+        recogida = true;
         Debug.Log("Objeto recogido");
+
+        // Avisa al GameManager: suma puntos, recalcula el agua y, si no queda basura, acaba el nivel
+        if (GameManager.Instancia != null)
+            GameManager.Instancia.BasuraRecogida(puntos);
 
         Destroy(gameObject);
     }
