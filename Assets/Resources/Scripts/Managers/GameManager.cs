@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     private int puntuacion;              // puntos de toda la partida
     private int puntuacionInicioNivel;   // puntos que tenía al empezar el nivel (para volver a ellos al morir)
     private bool nivelTerminado;
+    private int basuraRecogidaTotal;
 
     // Propiedades de solo lectura para la interfaz (HUD) u otros scripts
     public int BasuraTotal { get { return basuraTotal; } }
@@ -41,6 +42,7 @@ public class GameManager : MonoBehaviour
     public int EstadoAgua { get { return estadoAgua; } }
     public int Puntuacion { get { return puntuacion; } }
     public bool NivelTerminado { get { return nivelTerminado; } }
+    public int BasuraRecogidaTotal { get { return basuraRecogidaTotal; } }
 
     private void Awake()
     {
@@ -71,6 +73,9 @@ public class GameManager : MonoBehaviour
     {
         ReiniciarContadores();
         puntuacionInicioNivel = puntuacion;
+
+        if (FindFirstObjectByType<PlayerControllerV2>() != null)
+            ContadorBasuraHUD.Crear();
     }
 
     private void ReiniciarContadores()
@@ -132,11 +137,12 @@ public class GameManager : MonoBehaviour
     public void FinNivel()
     {
         nivelTerminado = true;
+        basuraRecogidaTotal += basuraRecogida;
         Debug.Log("¡Nivel completado! Puntuación: " + puntuacion);
 
         if (EsUltimoNivel())
         {
-            MensajesHUD.MostrarJuegoCompletado();
+            MensajesHUD.MostrarJuegoCompletado(basuraRecogidaTotal);
             return;
         }
 
@@ -176,6 +182,7 @@ public class GameManager : MonoBehaviour
     {
         CancelInvoke();
         puntuacion = 0;
+        basuraRecogidaTotal = 0;
         SceneManager.LoadScene(primerNivel);
     }
 

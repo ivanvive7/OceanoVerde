@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public static class MensajesHUD
 {
-    private static readonly Color VERDE = new Color(0f, 0.345f, 0f);
+    public static readonly Color VERDE = new Color(0f, 0.345f, 0f);
     private static readonly Color NARANJA = new Color32(248, 184, 0, 255);
     private static readonly Color MARRON = new Color32(80, 48, 0, 255);
 
@@ -16,14 +16,15 @@ public static class MensajesHUD
         CrearTexto(canvas, mensaje, 55, Vector2.zero, new Vector2(1500, 120), VERDE);
     }
 
-    public static void MostrarJuegoCompletado()
+    public static void MostrarJuegoCompletado(int basuraTotal)
     {
         Transform canvas = CrearCanvas();
-        CrearTexto(canvas, "JUEGO COMPLETADO", 55, new Vector2(0, 80), new Vector2(1500, 120), VERDE);
-        CrearBoton(canvas, "MENU PRINCIPAL", new Vector2(0, -60));
+        CrearTexto(canvas, "JUEGO COMPLETADO", 55, new Vector2(0, 130), new Vector2(1500, 120), VERDE);
+        CrearTexto(canvas, "BASURA TOTAL RECOGIDA: " + basuraTotal, 35, new Vector2(0, 20), new Vector2(1500, 80), VERDE);
+        CrearBoton(canvas, "MENU PRINCIPAL", new Vector2(0, -100));
     }
 
-    private static Transform CrearCanvas()
+    public static Transform CrearCanvas()
     {
         GameObject canvasGO = new GameObject("HUDMensajes");
         Canvas canvas = canvasGO.AddComponent<Canvas>();
@@ -46,7 +47,7 @@ public static class MensajesHUD
         return canvasGO.transform;
     }
 
-    private static Text CrearTexto(Transform padre, string contenido, int tamano, Vector2 posicion, Vector2 medida, Color color)
+    public static Text CrearTexto(Transform padre, string contenido, int tamano, Vector2 posicion, Vector2 medida, Color color)
     {
         GameObject textoGO = new GameObject("Texto", typeof(RectTransform), typeof(Text), typeof(Outline));
         textoGO.transform.SetParent(padre, false);
