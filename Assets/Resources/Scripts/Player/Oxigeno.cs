@@ -17,9 +17,7 @@ public class Oxigeno : MonoBehaviour
 
     void Start()
     {
-        sonidoAhogarse = Resources.Load<AudioClip>("sounds/sound");
-        if (sonidoAhogarse == null)
-            Debug.LogWarning("No se encontró Resources/sounds/sound");
+        sonidoAhogarse = Resources.Load<AudioClip>("Sounds/die");
         jugador = GetComponent<PlayerControllerV2>();
         hud = BurbujasHUD.Crear(burbujasMaximas);
         RecuperarBurbujas();
@@ -28,7 +26,6 @@ public class Oxigeno : MonoBehaviour
     void Update()
     {
         if (ahogado) return;
-        if (GameManager.Instancia != null && GameManager.Instancia.NivelTerminado) return;
 
         if (!jugador.EstaBajoElAgua)
         {
@@ -62,11 +59,8 @@ public class Oxigeno : MonoBehaviour
         if (sonidoAhogarse != null)
             Sfx.Play(sonidoAhogarse, volumen);
 
-        jugador.enabled = false;
-        GetComponent<Rigidbody2D>().simulated = false;
-
         if (GameManager.Instancia != null)
-            GameManager.Instancia.Perder();
+            GameManager.Instancia.ReiniciarNivel();
         else
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

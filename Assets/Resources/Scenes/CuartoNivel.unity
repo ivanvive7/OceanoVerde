@@ -15237,7 +15237,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8368325626920101596, guid: bc3462538692763439ed45dc549a6646, type: 3}
       propertyPath: minY
-      value: -8.5
+      value: -9.5
       objectReference: {fileID: 0}
     - target: {fileID: 8368325626920101596, guid: bc3462538692763439ed45dc549a6646, type: 3}
       propertyPath: target
