@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     public int BasuraPendiente { get { return basuraTotal - basuraRecogida; } }
     public int EstadoAgua { get { return estadoAgua; } }
     public int Puntuacion { get { return puntuacion; } }
+    public bool NivelTerminado { get { return nivelTerminado; } }
 
     private void Awake()
     {
@@ -133,24 +134,33 @@ public class GameManager : MonoBehaviour
         nivelTerminado = true;
         Debug.Log("¡Nivel completado! Puntuación: " + puntuacion);
 
-        // Esperamos un poco para que se vea el agua limpia y pasamos de nivel
+        if (EsUltimoNivel())
+        {
+            MensajesHUD.MostrarJuegoCompletado();
+            return;
+        }
+
+        MensajesHUD.MostrarMensaje("NIVEL COMPLETADO");
         Invoke(nameof(CargarSiguienteNivel), segundosAntesDeSiguienteNivel);
+    }
+
+    private bool EsUltimoNivel()
+    {
+        return SceneManager.GetActiveScene().buildIndex + 1 >= SceneManager.sceneCountInBuildSettings;
     }
 
     private void CargarSiguienteNivel()
     {
-        int siguiente = SceneManager.GetActiveScene().buildIndex + 1;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
 
-        if (siguiente < SceneManager.sceneCountInBuildSettings)
-        {
-            SceneManager.LoadScene(siguiente);
-        }
-        else
-        {
-            // No hay más niveles: se ha ganado la partida
-            Debug.Log("¡Has limpiado todo el océano! Puntuación final: " + puntuacion);
-            IrAlMenu();
-        }
+    public void Perder()
+    {
+        if (nivelTerminado) return;
+
+        nivelTerminado = true;
+        MensajesHUD.MostrarMensaje("HAS PERDIDO");
+        Invoke(nameof(ReiniciarNivel), segundosAntesDeSiguienteNivel);
     }
 
     /// <summary>Vuelve a cargar el nivel actual (por ejemplo al morir).</summary>

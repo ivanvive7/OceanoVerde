@@ -23,6 +23,7 @@ public class Oxigeno : MonoBehaviour
     void Update()
     {
         if (ahogado) return;
+        if (GameManager.Instancia != null && GameManager.Instancia.NivelTerminado) return;
 
         if (!jugador.EstaBajoElAgua)
         {
@@ -54,8 +55,11 @@ public class Oxigeno : MonoBehaviour
         ahogado = true;
         Debug.Log("Te has quedado sin oxígeno");
 
+        jugador.enabled = false;
+        GetComponent<Rigidbody2D>().simulated = false;
+
         if (GameManager.Instancia != null)
-            GameManager.Instancia.ReiniciarNivel();
+            GameManager.Instancia.Perder();
         else
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
