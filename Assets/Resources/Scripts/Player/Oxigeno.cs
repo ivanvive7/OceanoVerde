@@ -28,6 +28,7 @@ public class Oxigeno : MonoBehaviour
     void Update()
     {
         if (ahogado) return;
+        if (GameManager.Instancia != null && GameManager.Instancia.NivelTerminado) return;
 
         if (!jugador.EstaBajoElAgua)
         {
@@ -61,8 +62,11 @@ public class Oxigeno : MonoBehaviour
         if (sonidoAhogarse != null)
             Sfx.Play(sonidoAhogarse, volumen);
 
+        jugador.enabled = false;
+        GetComponent<Rigidbody2D>().simulated = false;
+
         if (GameManager.Instancia != null)
-            GameManager.Instancia.ReiniciarNivel();
+            GameManager.Instancia.Perder();
         else
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

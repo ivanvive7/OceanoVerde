@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     // Avisa a quien le interese (por ejemplo WaterManager) de que el agua ha cambiado de estado
     public event Action<int> OnEstadoAguaCambiado;
-
+    
     // Datos del nivel actual
     private int basuraTotal;        // basura que ha aparecido en este nivel
     private int basuraRecogida;     // basura que el jugador ya ha recogido
@@ -33,17 +33,21 @@ public class GameManager : MonoBehaviour
     private int puntuacion;              // puntos de toda la partida
     private int puntuacionInicioNivel;   // puntos que tenía al empezar el nivel (para volver a ellos al morir)
     private bool nivelTerminado;
+    private int basuraRecogidaTotal;
 
+    // Sonidos (se cargan de Resources/Sounds)
+    private AudioClip ganarNivel;
+    private AudioClip ganarJuego;
+    private float volumenMusica = 0.5f;
+    private AudioSource musica;
     // Propiedades de solo lectura para la interfaz (HUD) u otros scripts
     public int BasuraTotal { get { return basuraTotal; } }
     public int TotalRecogidas { get { return basuraRecogida; } }
     public int BasuraPendiente { get { return basuraTotal - basuraRecogida; } }
     public int EstadoAgua { get { return estadoAgua; } }
     public int Puntuacion { get { return puntuacion; } }
-    public bool NivelTerminado => nivelTerminado;
-
-    private AudioClip ganarNivel;
-        private AudioClip ganarJuego;
+    public bool NivelTerminado { get { return nivelTerminado; } }
+    public int BasuraRecogidaTotal { get { return basuraRecogidaTotal; } }
 
     private void Awake()
     {
@@ -57,9 +61,22 @@ public class GameManager : MonoBehaviour
         Instancia = this;
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += AlCargarEscena;
+
         ganarNivel = Resources.Load<AudioClip>("Sounds/win");
         ganarJuego = Resources.Load<AudioClip>("Sounds/wingame");
-
+        AudioClip clipMusica = Resources.Load<AudioClip>("Sounds/music");
+        if (clipMusica != null)
+        {
+            musica = gameObject.AddComponent<AudioSource>();
+            musica.clip = clipMusica;
+            musica.loop = true;
+            musica.volume = volumenMusica;
+            musica.spatialBlend = 0f;
+            musica.playOnAwake = false;
+            musica.Play();
+        }
+        if (ganarNivel == null) Debug.LogWarning("No se encontró Resources/Sounds/win");
+        if (ganarJuego == null) Debug.LogWarning("No se encontró Resources/Sounds/wingame");
     }
 
     private void OnDestroy()
@@ -77,6 +94,9 @@ public class GameManager : MonoBehaviour
     {
         ReiniciarContadores();
         puntuacionInicioNivel = puntuacion;
+
+        if (FindFirstObjectByType<PlayerControllerV2>() != null)
+            ContadorBasuraHUD.Crear();
     }
 
     private void ReiniciarContadores()
@@ -89,7 +109,7 @@ public class GameManager : MonoBehaviour
 
     // ---------- Basura ----------
 
-    /// <summary>La llama cada basura que SÍ aparece al cargar el nivel.</summary>
+    /// <summary>La llama cada basura que SÍ aparece (al cargar el nivel o al ser lanzada).</summary>
     public void RegistrarBasura()
     {
         basuraTotal++;
@@ -139,29 +159,39 @@ public class GameManager : MonoBehaviour
     public void FinNivel()
     {
         nivelTerminado = true;
+        basuraRecogidaTotal += basuraRecogida;
         Debug.Log("¡Nivel completado! Puntuación: " + puntuacion);
 
-        // Esperamos un poco para que se vea el agua limpia y pasamos de nivel
+        if (EsUltimoNivel())
+        {
+            Sfx.Play(ganarJuego, 1f);
+            MensajesHUD.MostrarJuegoCompletado(basuraRecogidaTotal);
+            return;
+        }
+
+        Sfx.Play(ganarNivel, 1f);
+        MensajesHUD.MostrarMensaje("NIVEL COMPLETADO");
         Invoke(nameof(CargarSiguienteNivel), segundosAntesDeSiguienteNivel);
+    }
+
+    private bool EsUltimoNivel()
+    {
+        return SceneManager.GetActiveScene().buildIndex + 1 >= SceneManager.sceneCountInBuildSettings;
     }
 
     private void CargarSiguienteNivel()
     {
-        int siguiente = SceneManager.GetActiveScene().buildIndex + 1;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
 
-        if (siguiente < SceneManager.sceneCountInBuildSettings)
-        {
-            Sfx.Play(ganarNivel, 1);
-            SceneManager.LoadScene(siguiente);
-        }
-        else
-        {
-            // No hay más niveles: se ha ganado la partida
-            Sfx.Play(ganarJuego, 1);
+    /// <summary>El jugador pierde (por ejemplo se queda sin oxígeno): mensaje y reinicio del nivel.</summary>
+    public void Perder()
+    {
+        if (nivelTerminado) return;
 
-            Debug.Log("¡Has limpiado todo el océano! Puntuación final: " + puntuacion);
-            IrAlMenu();
-        }
+        nivelTerminado = true;
+        MensajesHUD.MostrarMensaje("HAS PERDIDO");
+        Invoke(nameof(ReiniciarNivel), segundosAntesDeSiguienteNivel);
     }
 
     /// <summary>Vuelve a cargar el nivel actual (por ejemplo al morir).</summary>
@@ -177,6 +207,8 @@ public class GameManager : MonoBehaviour
     {
         CancelInvoke();
         puntuacion = 0;
+        basuraRecogidaTotal = 0;
+        if (musica != null && !musica.isPlaying) musica.Play();
         SceneManager.LoadScene(primerNivel);
     }
 
