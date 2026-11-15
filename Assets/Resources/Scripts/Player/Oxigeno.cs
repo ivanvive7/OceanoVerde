@@ -1,0 +1,62 @@
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+[RequireComponent(typeof(PlayerControllerV2))]
+public class Oxigeno : MonoBehaviour
+{
+    public int burbujasMaximas = 8;
+    public float segundosPorBurbuja = 4f;
+
+    private PlayerControllerV2 jugador;
+    private BurbujasHUD hud;
+    private int burbujas;
+    private float temporizador;
+    private bool ahogado;
+
+    void Start()
+    {
+        jugador = GetComponent<PlayerControllerV2>();
+        hud = BurbujasHUD.Crear(burbujasMaximas);
+        RecuperarBurbujas();
+    }
+
+    void Update()
+    {
+        if (ahogado) return;
+
+        if (!jugador.EstaBajoElAgua)
+        {
+            if (burbujas < burbujasMaximas || temporizador > 0f)
+                RecuperarBurbujas();
+            return;
+        }
+
+        temporizador += Time.deltaTime;
+        if (temporizador < segundosPorBurbuja) return;
+
+        temporizador -= segundosPorBurbuja;
+        burbujas--;
+        hud.Mostrar(burbujas);
+
+        if (burbujas <= 0)
+            Ahogarse();
+    }
+
+    private void RecuperarBurbujas()
+    {
+        burbujas = burbujasMaximas;
+        temporizador = 0f;
+        hud.Mostrar(burbujas);
+    }
+
+    private void Ahogarse()
+    {
+        ahogado = true;
+        Debug.Log("Te has quedado sin oxígeno");
+
+        if (GameManager.Instancia != null)
+            GameManager.Instancia.ReiniciarNivel();
+        else
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+}

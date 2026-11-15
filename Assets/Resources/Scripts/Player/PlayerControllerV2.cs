@@ -25,8 +25,13 @@ public class PlayerControllerV2 : MonoBehaviour
     bool isGrounded;
     bool isSwimming;
 
+    public bool EstaBajoElAgua { get { return isSwimming; } }
+
     void Awake()
     {
+        if (GetComponent<Oxigeno>() == null)
+            gameObject.AddComponent<Oxigeno>();
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();

@@ -23,8 +23,11 @@ public class Enemy : MonoBehaviour
 
     private float timer;
     private float throwTimer;
+    private Animator animator;
+
     void Start()
     {
+        animator = GetComponent<Animator>();
         throwTimer = throwInterval - 0.5f; // first throw happens on arrival
     }
     void Update()
@@ -51,6 +54,9 @@ public class Enemy : MonoBehaviour
 
     IEnumerator ThrowTrash()
     {
+        if (animator != null)
+            animator.SetTrigger("Throw");
+
         Vector3 start = targetPos;
         Vector3 apex = start + Vector3.up * riseHeight;
         float landX = start.x + throwDirection.normalized.x * Random.Range(minDistance, maxDistance);
