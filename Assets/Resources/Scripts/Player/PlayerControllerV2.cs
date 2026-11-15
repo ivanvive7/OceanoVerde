@@ -4,6 +4,10 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class PlayerControllerV2 : MonoBehaviour
 {
+
+    [SerializeField] AudioClip jumpSfx;
+    [SerializeField, Range(0f, 1f)] float volume = 1f;
+
     [Header("Movement")]
     [SerializeField] float moveSpeed = 8f;
     [SerializeField] float jumpSpeed = 12f;
@@ -79,12 +83,15 @@ public class PlayerControllerV2 : MonoBehaviour
 
         if (jumpBufferCounter > 0f && (isGrounded || isSwimming))
         {
+
             if (isSwimming)
             {
                 vy = jumpSpeed * swimJumpMultiplier;
             }
             else
             {
+                if (jumpSfx != null)
+                    Sfx.Play(jumpSfx, volume);
                 vy = jumpSpeed;
             }
 

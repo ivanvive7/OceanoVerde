@@ -12,9 +12,14 @@ public class Oxigeno : MonoBehaviour
     private int burbujas;
     private float temporizador;
     private bool ahogado;
+    private AudioClip sonidoAhogarse;
+    [Range(0f, 1f)] public float volumen = 1f;
 
     void Start()
     {
+        sonidoAhogarse = Resources.Load<AudioClip>("sounds/sound");
+        if (sonidoAhogarse == null)
+            Debug.LogWarning("No se encontró Resources/sounds/sound");
         jugador = GetComponent<PlayerControllerV2>();
         hud = BurbujasHUD.Crear(burbujasMaximas);
         RecuperarBurbujas();
@@ -53,6 +58,8 @@ public class Oxigeno : MonoBehaviour
     {
         ahogado = true;
         Debug.Log("Te has quedado sin oxígeno");
+        if (sonidoAhogarse != null)
+            Sfx.Play(sonidoAhogarse, volumen);
 
         if (GameManager.Instancia != null)
             GameManager.Instancia.ReiniciarNivel();

@@ -40,6 +40,10 @@ public class GameManager : MonoBehaviour
     public int BasuraPendiente { get { return basuraTotal - basuraRecogida; } }
     public int EstadoAgua { get { return estadoAgua; } }
     public int Puntuacion { get { return puntuacion; } }
+    public bool NivelTerminado => nivelTerminado;
+
+    private AudioClip ganarNivel;
+        private AudioClip ganarJuego;
 
     private void Awake()
     {
@@ -53,6 +57,9 @@ public class GameManager : MonoBehaviour
         Instancia = this;
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += AlCargarEscena;
+        ganarNivel = Resources.Load<AudioClip>("Sounds/win");
+        ganarJuego = Resources.Load<AudioClip>("Sounds/wingame");
+
     }
 
     private void OnDestroy()
@@ -86,6 +93,7 @@ public class GameManager : MonoBehaviour
     public void RegistrarBasura()
     {
         basuraTotal++;
+        CalcularEstadoAgua();
     }
 
     /// <summary>La llama una basura cuando el jugador la recoge.</summary>
@@ -143,11 +151,14 @@ public class GameManager : MonoBehaviour
 
         if (siguiente < SceneManager.sceneCountInBuildSettings)
         {
+            Sfx.Play(ganarNivel, 1);
             SceneManager.LoadScene(siguiente);
         }
         else
         {
             // No hay más niveles: se ha ganado la partida
+            Sfx.Play(ganarJuego, 1);
+
             Debug.Log("¡Has limpiado todo el océano! Puntuación final: " + puntuacion);
             IrAlMenu();
         }

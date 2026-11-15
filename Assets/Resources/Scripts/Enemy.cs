@@ -15,7 +15,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] float throwTime = 0.8f;
     [SerializeField] float minDistance = 1f;
     [SerializeField] float maxDistance = 5f;
-    [SerializeField] Vector3 throwDirection = Vector3.left; 
+    [SerializeField] Vector3 throwDirection = Vector3.left;
+    [SerializeField] AudioClip sfx;
+    [SerializeField, Range(0f, 1f)] float volume = 1f;
 
     [Header("Ground")]
     [SerializeField] LayerMask groundMask;      
@@ -42,7 +44,7 @@ public class Enemy : MonoBehaviour
         throwTimer += Time.deltaTime;
         if (throwTimer < throwInterval) return;
         throwTimer -= throwInterval;
-
+        if (GameManager.Instancia != null && GameManager.Instancia.NivelTerminado) return;
         StartCoroutine(ThrowTrash());
     }
     void OnTriggerEnter2D(Collider2D other)
@@ -57,11 +59,17 @@ public class Enemy : MonoBehaviour
         if (animator != null)
             animator.SetTrigger("Throw");
 
+        if (sfx != null)
+            Sfx.Play(sfx, volume);
+
         Vector3 start = targetPos;
         Vector3 apex = start + Vector3.up * riseHeight;
         float landX = start.x + throwDirection.normalized.x * Random.Range(minDistance, maxDistance);
 
         GameObject obj = Instantiate(trashPrefab, start, Quaternion.identity);
+
+        if (GameManager.Instancia != null)
+            GameManager.Instancia.RegistrarBasura();
 
         TrashPickup pickup = obj.GetComponent<TrashPickup>();
         pickup.enabled = false;

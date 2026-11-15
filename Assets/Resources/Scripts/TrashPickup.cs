@@ -27,15 +27,15 @@ public class TrashPickup : MonoBehaviour
 
     void Start()
     {
-        // Se decide aquí (y no en Awake) si aparece, porque el GameManager pone
-        // los contadores a 0 al cargar la escena, y eso ocurre antes de los Start.
-        if (!skipDestroyRoll && Random.Range(0, destroyPosibility) == 0)
+        // Thrown by an enemy: the Enemy already registered it and it skips the spawn roll
+        if (skipDestroyRoll) return;
+
+        if (Random.Range(0, destroyPosibility) == 0)
         {
             Destroy(gameObject);
             return;
         }
 
-        // Ha aparecido: se registra en el GameManager para que la cuente
         if (GameManager.Instancia != null)
             GameManager.Instancia.RegistrarBasura();
         else
