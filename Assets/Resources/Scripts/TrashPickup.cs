@@ -4,7 +4,8 @@ public class TrashPickup : MonoBehaviour
 {
     [SerializeField] Sprite[] variations;
     [SerializeField] int destroyPosibility = 5;
-    public int puntos = 10;                      // puntos que da al recogerla
+    [SerializeField] int puntos = 10;                      // puntos que da al recogerla
+    [HideInInspector] public bool skipDestroyRoll;
     private float secondsPerBob = 0.25f;
     private static float unitsPerPixel = 0.0625f;
     private float timer;
@@ -28,7 +29,7 @@ public class TrashPickup : MonoBehaviour
     {
         // Se decide aquí (y no en Awake) si aparece, porque el GameManager pone
         // los contadores a 0 al cargar la escena, y eso ocurre antes de los Start.
-        if (Random.Range(0, destroyPosibility) == 0)
+        if (!skipDestroyRoll && Random.Range(0, destroyPosibility) == 0)
         {
             Destroy(gameObject);
             return;

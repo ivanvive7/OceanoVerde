@@ -12,6 +12,10 @@ public class CameraFollow : MonoBehaviour
     public float yOffset = 1f;               // la cámara va un poco por encima del jugador
     public float smoothSpeed = 5f;           // 0 = sin suavizado (instantáneo)
 
+    [Header("Límites")]
+    public float minY = -0.5f;               // lo más bajo que puede llegar la cámara
+    public float maxY = 1.5f;                // lo más alto que puede llegar la cámara
+
     private float startX;
     private float startZ;
 
@@ -26,7 +30,7 @@ public class CameraFollow : MonoBehaviour
     {
         if (target == null) return;
 
-        float targetY = Mathf.Clamp(target.position.y + yOffset, -0.5f, 1.5f);
+        float targetY = Mathf.Clamp(target.position.y + yOffset, minY, maxY);
         Vector3 desired = new Vector3(startX, targetY, startZ);
 
         if (smoothSpeed <= 0f)
